@@ -50,6 +50,16 @@
             </intent-filter>-->
         </activity>
 
+        <activity
+            android:name=".ui.opensdk.OpenSdkTestActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Android14Test">
+            <!--<intent
+            -filter>
+                <action android:name="android.intent.action.TEST" />
+            </intent-filter>-->
+        </activity>
+
         <receiver
             android:name=".ui.intent.TestBroadcastReceiver"
             android:exported="true">

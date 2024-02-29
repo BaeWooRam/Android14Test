@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.geekstudio.android14test.ui.file.FileTestActivity
 import com.geekstudio.android14test.ui.intent.IntentTestActivity
+import com.geekstudio.android14test.ui.opensdk.OpenSdkTestActivity
 import com.geekstudio.android14test.ui.theme.Android14TestTheme
 
 class MainActivity : ComponentActivity() {
@@ -31,6 +32,7 @@ class MainActivity : ComponentActivity() {
                     Column {
                         TestButton(onclick = { moveToIntentTest() }, name = "암시적 인텐트와 대기 중인 인텐트 제한사항 체크")
                         TestButton(onclick = { moveToFileTest() }, name = "더 안전한 동적 코드 로드 사용")
+                        TestButton(onclick = { moveToOpenSdkTest() }, name = "OpenJDK 17 업데이트")
                     }
                 }
             }
@@ -43,6 +45,10 @@ class MainActivity : ComponentActivity() {
 
     private fun moveToFileTest() {
         startActivity(Intent(this, FileTestActivity::class.java))
+    }
+
+    private fun moveToOpenSdkTest() {
+        startActivity(Intent(this, OpenSdkTestActivity::class.java))
     }
 }
 
