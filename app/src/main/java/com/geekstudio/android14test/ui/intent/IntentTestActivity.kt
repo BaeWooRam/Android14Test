@@ -1,6 +1,10 @@
 package com.geekstudio.android14test.ui.intent
 
 import android.Manifest
+import android.app.AlarmManager
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.bluetooth.BluetoothAdapter
 import android.content.BroadcastReceiver
 import android.content.ComponentName
@@ -59,7 +63,15 @@ class IntentTestActivity : ComponentActivity() {
                         TestButton(onclick = { clickTestButton6() }, name = "암시적 + 패키지명")
                         Text(text = "그 밖에")
                         TestButton(onclick = { clickTestBluetoothSettingButton() }, name = "Bluetooth Setting 이동")
+                        TestButton(onclick = { clickTestBatteryOptimizationSetting() }, name = "Battery Optimization Setting 이동")
+                        TestButton(onclick = { clickTestLocationSourceSetting() }, name = "Location Source Setting 이동")
                         TestButton(onclick = { clickTestBluetoothEnableButton() }, name = "Bluetooth Enable 실행")
+                        TestButton(onclick = { clickTestNotificationSetting() }, name = "Notification Setting 실행")
+                        TestButton(onclick = { clickTestAppDetailSetting() }, name = "App Detail Setting 실행")
+                        TestButton(onclick = { clickTestScheduleExactAlarm() }, name = "Schedule Exact Alarm 실행")
+                        TestButton(onclick = { clickTestWifiSetting() }, name = "Wifi Setting 실행")
+                        TestButton(onclick = { clickTestChannelNotificationSetting() }, name = "Channel Notification Setting 실행")
+                        TestButton(onclick = { clickTestActionView() }, name = "Action View 실행")
                         TestButton(onclick = { clickTestMainButton() }, name = "Main Category : LAUNCHER 실행")
                         TestButton(onclick = { clickTestMainHomeButton() }, name = "Main Category : HOME 실행")
                         TestButton(onclick = { clickTestTelButton() }, name = "TEL 01092055472 실행")
@@ -84,7 +96,8 @@ class IntentTestActivity : ComponentActivity() {
     }
 
     private fun registerLocalBroadcastManager() {
-        LocalBroadcastManager.getInstance(this).registerReceiver(localBroadcastManager, IntentFilter("android.intent.action.TEST"))
+        LocalBroadcastManager.getInstance(this)
+            .registerReceiver(localBroadcastManager, IntentFilter("android.intent.action.TEST"))
     }
 
     private fun unregisterReceiverLocalBroadcastManager() {
@@ -147,13 +160,82 @@ class IntentTestActivity : ComponentActivity() {
         startActivity(intent)
     }
 
-    private val enableBluetoothStartForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            result: ActivityResult ->
-        if (result.resultCode == RESULT_OK) {
-            val selectedImageUri: Uri? = result.data?.data
-            Log.d("IntentTestActivity", "enableBluetoothStartForResult selectedImageUri = $selectedImageUri")
-        }
+    private fun clickTestLocationSourceSetting() {
+        val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+        startActivity(intent)
     }
+
+    private fun clickTestNotificationSetting() {
+        val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
+            putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
+        }
+        startActivity(intent)
+    }
+
+    private fun clickTestAppDetailSetting() {
+        val intent = Intent(
+            Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+            Uri.parse("package:${packageName}")
+        )
+        intent.addCategory("android.intent.category.DEFAULT")
+        startActivity(intent)
+    }
+
+    private fun clickTestScheduleExactAlarm() {
+        val appDetail = Intent(
+            Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM,
+            Uri.parse("package:$packageName")
+        )
+        appDetail.addCategory(Intent.CATEGORY_DEFAULT)
+        appDetail.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(appDetail)
+    }
+
+    private fun clickTestBatteryOptimizationSetting() {
+        val intent = Intent()
+        intent.action = Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS
+        startActivity(intent)
+    }
+
+    private fun clickTestWifiSetting() {
+        val intent = Intent(Settings.ACTION_WIFI_SETTINGS)
+        startActivity(intent)
+    }
+
+    private fun clickTestChannelNotificationSetting() {
+        val channelId = "Test_Notification"
+        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+
+        if (notificationManager.getNotificationChannel(channelId) == null) {
+            val channel = NotificationChannel(
+                channelId,
+                "Test Channel Notification",
+                NotificationManager.IMPORTANCE_HIGH
+            )
+            notificationManager.createNotificationChannel(channel)
+        }
+
+        val intent: Intent = Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS)
+            .putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
+            .putExtra(Settings.EXTRA_CHANNEL_ID, channelId)
+        startActivity(intent)
+    }
+
+    private fun clickTestActionView() {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://naver.com"))
+        startActivity(intent);
+    }
+
+    private val enableBluetoothStartForResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            if (result.resultCode == RESULT_OK) {
+                val selectedImageUri: Uri? = result.data?.data
+                Log.d(
+                    "IntentTestActivity",
+                    "enableBluetoothStartForResult selectedImageUri = $selectedImageUri"
+                )
+            }
+        }
 
     private fun clickTestBluetoothEnableButton() {
         val bleEnableIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
@@ -207,13 +289,16 @@ class IntentTestActivity : ComponentActivity() {
         startActivity(shareIntent)
     }
 
-    private val pickImageStartForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            result: ActivityResult ->
-        if (result.resultCode == RESULT_OK) {
-            val selectedImageUri: Uri? = result.data?.data
-            Log.d("IntentTestActivity", "pickImageStartForResult selectedImageUri = $selectedImageUri")
+    private val pickImageStartForResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            if (result.resultCode == RESULT_OK) {
+                val selectedImageUri: Uri? = result.data?.data
+                Log.d(
+                    "IntentTestActivity",
+                    "pickImageStartForResult selectedImageUri = $selectedImageUri"
+                )
+            }
         }
-    }
 
     private fun clickTestPickImageButton() {
         val intent = Intent(Intent.ACTION_PICK)
