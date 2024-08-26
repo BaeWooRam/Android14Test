@@ -158,7 +158,7 @@ class FileTestActivity : ComponentActivity() {
 //        values.put(MediaStore.Images.Media.DATA, "/sdcard/DCIM/Screenshots")
         /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             val fileForlder: String =
-                Environment.DIRECTORY_MOVIES + "/HTHOME/Records/" + String.format(
+                Environment.DIRECTORY_MOVIES + "/Test/Records/" + String.format(
                     "%tY",
                     date
                 ) + String.format("%tm", date) + String.format("%td", date)
